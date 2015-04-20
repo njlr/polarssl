@@ -1,12 +1,9 @@
 /*
  *  NIST SP800-38C compliant CCM implementation
  *
- *  Copyright (C) 2014, Brainspark B.V.
+ *  Copyright (C) 2014, ARM Limited, All Rights Reserved
  *
- *  This file is part of PolarSSL (http://www.polarssl.org)
- *  Lead Maintainer: Paul Bakker <polarssl_maintainer at polarssl.org>
- *
- *  All rights reserved.
+ *  This file is part of mbed TLS (https://tls.mbed.org)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +38,17 @@
 #if defined(POLARSSL_CCM_C)
 
 #include "polarssl/ccm.h"
+
+#include <string.h>
+
+#if defined(POLARSSL_SELF_TEST) && defined(POLARSSL_AES_C)
+#if defined(POLARSSL_PLATFORM_C)
+#include "polarssl/platform.h"
+#else
+#include <stdio.h>
+#define polarssl_printf printf
+#endif /* POLARSSL_PLATFORM_C */
+#endif /* POLARSSL_SELF_TEST && POLARSSL_AES_C */
 
 /* Implementation that should never be optimized out by the compiler */
 static void polarssl_zeroize( void *v, size_t n ) {
@@ -336,14 +344,6 @@ int ccm_auth_decrypt( ccm_context *ctx, size_t length,
 
 
 #if defined(POLARSSL_SELF_TEST) && defined(POLARSSL_AES_C)
-
-#if defined(POLARSSL_PLATFORM_C)
-#include "polarssl/platform.h"
-#else
-#include <stdio.h>
-#define polarssl_printf printf
-#endif
-
 /*
  * Examples 1 to 3 from SP800-38C Appendix C
  */

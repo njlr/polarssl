@@ -3,12 +3,9 @@
  *
  * \brief X.509 generic defines and structures
  *
- *  Copyright (C) 2006-2014, Brainspark B.V.
+ *  Copyright (C) 2006-2014, ARM Limited, All Rights Reserved
  *
- *  This file is part of PolarSSL (http://www.polarssl.org)
- *  Lead Maintainer: Paul Bakker <polarssl_maintainer at polarssl.org>
- *
- *  All rights reserved.
+ *  This file is part of mbed TLS (https://tls.mbed.org)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,6 +41,18 @@
  * \addtogroup x509_module
  * \{
  */
+
+#if !defined(POLARSSL_X509_MAX_INTERMEDIATE_CA)
+/**
+ * Maximum number of intermediate CAs in a verification chain.
+ * That is, maximum length of the chain, excluding the end-entity certificate
+ * and the trusted root certificate.
+ *
+ * Set this to a low value to prevent an adversary from making you waste
+ * resources verifying an overlong certificate chain.
+ */
+#define POLARSSL_X509_MAX_INTERMEDIATE_CA   8
+#endif
 
 /**
  * \name X509 Error codes
@@ -216,21 +225,30 @@ int x509_dn_gets( char *buf, size_t size, const x509_name *dn );
  */
 int x509_serial_gets( char *buf, size_t size, const x509_buf *serial );
 
+#if ! defined(POLARSSL_DEPRECATED_REMOVED)
+#if defined(POLARSSL_DEPRECATED_WARNING)
+#define DEPRECATED    __attribute__((deprecated))
+#else
+#define DEPRECATED
+#endif
 /**
  * \brief          Give an known OID, return its descriptive string.
- *                 (Deprecated. Use oid_get_extended_key_usage() instead.)
- *                 Warning: only works for extended_key_usage OIDs!
+ *
+ * \deprecated     Use oid_get_extended_key_usage() instead.
+ *
+ * \warning        Only works for extended_key_usage OIDs!
  *
  * \param oid      buffer containing the oid
  *
  * \return         Return a string if the OID is known,
  *                 or NULL otherwise.
  */
-const char *x509_oid_get_description( x509_buf *oid );
+const char *x509_oid_get_description( x509_buf *oid ) DEPRECATED;
 
 /**
  * \brief          Give an OID, return a string version of its OID number.
- *                 (Deprecated. Use oid_get_numeric_string() instead)
+ *
+ * \deprecated     Use oid_get_numeric_string() instead.
  *
  * \param buf      Buffer to write to
  * \param size     Maximum size of buffer
@@ -239,7 +257,9 @@ const char *x509_oid_get_description( x509_buf *oid );
  * \return         Length of the string written (excluding final NULL) or
  *                 POLARSSL_ERR_OID_BUF_TO_SMALL in case of error
  */
-int x509_oid_get_numeric_string( char *buf, size_t size, x509_buf *oid );
+int x509_oid_get_numeric_string( char *buf, size_t size, x509_buf *oid ) DEPRECATED;
+#undef DEPRECATED
+#endif /* POLARSSL_DEPRECATED_REMOVED */
 
 /**
  * \brief          Check a given x509_time against the system time and check
@@ -295,7 +315,6 @@ int x509_get_serial( unsigned char **p, const unsigned char *end,
                      x509_buf *serial );
 int x509_get_ext( unsigned char **p, const unsigned char *end,
                   x509_buf *ext, int tag );
-int x509_load_file( const char *path, unsigned char **buf, size_t *n );
 int x509_sig_alg_gets( char *buf, size_t size, const x509_buf *sig_oid,
                        pk_type_t pk_alg, md_type_t md_alg,
                        const void *sig_opts );
