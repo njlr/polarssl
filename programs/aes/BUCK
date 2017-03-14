@@ -1,0 +1,19 @@
+cxx_binary(
+  name = 'aescrypt2',
+  srcs = [
+    'aescrypt2.c',
+  ],
+  deps = [
+    '//:polarssl',
+  ],
+)
+
+cxx_binary(
+  name = 'crypt_and_hash',
+  srcs = [
+    'crypt_and_hash.c',
+  ],
+  deps = [
+    '//:polarssl',
+  ],
+)

@@ -1,0 +1,9 @@
+cxx_binary(
+  name = 'gen_entropy',
+  srcs = [
+    'gen_entropy.c',
+  ],
+  deps = [
+    '//:polarssl',
+  ],
+)
